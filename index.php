@@ -13,7 +13,7 @@ function error(){
 function route($method, $urlData, $formData) {
 
 	// GET /users/{user_id}/services/{service_id}/tarifs
-	if ($method === 'GET' &&			// Метод
+	if ($method === 'GET' &&	// Метод
 			count($urlData) === 5 &&	// Сколько параметров
 			$urlData[0] === 'users' &&
 			$urlData[2] === 'services' &&
