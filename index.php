@@ -4,17 +4,6 @@ header("Content-type:text/html;charset=UTF-8");
 include_once 'db_cfg.php';
 
 
-// Подключаемся к базе через PDO
-try {
-	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_NAME;
-	$pdo = new PDO($dsn, DB_USER, DB_PASSWORD);
-}
-// Обрабатываем ошибку в PDO
-catch(PDOException $e) {
-		exit('Подключение не удалось: ' . $e->getMessage());
-}
-
-
 // Ошибка API запроса
 function error(){
 	exit('{"result": "error"}');
@@ -24,14 +13,24 @@ function error(){
 function route($method, $urlData, $formData) {
 
 	// GET /users/{user_id}/services/{service_id}/tarifs
-	if ($method === 'GET'						&& // Метод
-			count($urlData) === 5 	 		&& // Сколько параметров
-			$urlData[0] === 'users' 	 	&&
-			$urlData[2] === 'services' 	&&
+	if ($method === 'GET' &&			// Метод
+			count($urlData) === 5 &&	// Сколько параметров
+			$urlData[0] === 'users' &&
+			$urlData[2] === 'services' &&
 			$urlData[4] === 'tarifs') {
 
 		$user_id = $urlData[1];
 		$service_id = $urlData[3];
+
+		// Подключаемся к базе через PDO
+		try {
+			$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_NAME;
+			$pdo = new PDO($dsn, DB_USER, DB_PASSWORD);
+		}
+		// Обрабатываем ошибку в PDO
+		catch(PDOException $e) {
+				exit('Подключение не удалось: ' . $e->getMessage());
+		}
 
 
 		// Какой id тарифа у пользователя
@@ -60,7 +59,6 @@ function route($method, $urlData, $formData) {
 		echo'
 			{
 				"result":"ok",
-				"method":"'.$method.'",
 				"tarifs":[
 					{
 						"title":"'.$tarif->title.'",
@@ -85,8 +83,6 @@ function route($method, $urlData, $formData) {
 		$user_id = $urlData[1];
 		$service_id = $urlData[3];
 
-
-
 		return;
 	}
 
@@ -94,7 +90,6 @@ function route($method, $urlData, $formData) {
 	// Возвращаем ошибку 404
 	include('error_404.php');
 }
-
 
 
 // Получение данных из тела запроса
